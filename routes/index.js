@@ -6,6 +6,7 @@ var router = express.Router()
 var path = require('path');
 var test = require('./test/test');
 var dbtest = require('./test/test_db');
+var android_group = require('./android/group');
 
 
 
@@ -18,5 +19,7 @@ router.get('/', function(req, res, next) {
 // 라우터설정
 router.use('/test/test', test);
 router.use('/test/test_db', dbtest);
+
+router.use('/android/group', android_group);
 
 module.exports = router;

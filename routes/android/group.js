@@ -31,27 +31,26 @@ connection.connect();
 router.get('/', function(req, res){
   console.log("test.js GET")
   // res.redirect('/test');
-  res.render('test_db', {'testValue' : "디비테스트"})
+  res.render('android_group', {'testValue' : "안드로이드 테스트"})
 });
 
 
 // 1. /test , POST실험
 router.post('/', function(req,res){
 
-  console.log("test.js POST");
 	var name = req.body.name;
-	var rand_num = req.body.rand_num;
-  var date = req.body.date;
+  var responseData = {};
 
-  console.log("DB접속시도" + name + ", " + rand_num + ", " + date);
-  var sql = {name, rand_num, date};
-	var query = connection.query('insert into raw_group set ?', sql, function(err,rows) {
-		if(err) {
-      console.log("DB접속실패: " + err);
-      throw err
-    }
+	var query = connection.query('select * from raw_group where name =?', [name], function(err, rows) {
+		if(err) throw err;
 
-		return res.json({'result' : "DB입력 성공"});
+    if(rows[0]) {
+			responseData.result = 1;
+			responseData.data = rows[0];
+		} else {
+			responseData.result = 0;
+		}
+		res.json(responseData)
 	})
 
 
