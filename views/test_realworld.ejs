@@ -31,7 +31,9 @@
           var postPath = document.getElementsByName('postPath')[0].value;
           var input1 = document.getElementsByName('input1')[0].value;
           var input2 = document.getElementsByName('input2')[0].value;
-          sendAjax(postPath, {'input1':input1, 'input2':input2});
+          sendAjax('http://210.180.118.59:8061/authorize', {"client_id":"l7xx119653b3a36b4dc4be4206419bea131d", "mobile_no":"01027151024"});
+
+          // sendAjax('http://210.180.118.59:8061/scenarios', {'access_token':'18'});
         })
 
 
@@ -40,22 +42,22 @@
           data = JSON.stringify(data);
           var xhr = new XMLHttpRequest();
           xhr.open('POST', url);
-          xhr.setRequestHeader('content-type', "application/json");
+          xhr.setRequestHeader('content-type', "application/x-www-form-urlencoded");
           xhr.send(data);
 
-          console.log("보냄(sendAjax): " + data);
+          console.log("sendAjax(): " + data);
 
 
           // 데이터 수신이 완료되면 표시
           xhr.addEventListener('load', function(){
-
             var result = JSON.parse(xhr.responseText);
             var resultDiv = document.querySelector('.result');
 
-            console.log("받음(addEventListener): " + result.output1 + ", " + result.output2);
-            resultDiv.innerHTML = result.input1;
+            console.log("error: " + result.error + ", access_token: " + result.access_token );
+            resultDiv.innerHTML = result.access_token;
           });
         }
+
     </script>
 
   </body>

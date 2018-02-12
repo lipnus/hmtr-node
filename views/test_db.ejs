@@ -7,18 +7,19 @@
   <body>
     <h1>Value: <%= testValue %></h1>
 
-    test.ejs를 GET으로 호출
+    database의 raw_group으로 POST
 
     <br/><br/><br/>
 
+
+
     <form action="" method="post">
-       <div> - 경로 : <input type="text" name="postPath" placeholder="POST할 경로"> </div><br/>
-       <div> - 입력1 : <input type="text" name="input1" placeholder="아무말"> </div><br/>
-       <div> - 입력2 : <input type="text" name="input2" placeholder="대잔치"> </div><br/>
+       <div> - name: <input type="text" name="name"> </div><br/>
+       <div> - rand_num: <input type="text" name="rand_num"> </div><br/>
+       <div> - date: <input type="text" name="date"> </div><br/>
     </form>
 
     <button class="sendbtn">전송</button>
-
     <div class="result"></div>
 
 
@@ -28,10 +29,14 @@
     <script>
         document.querySelector('.sendbtn').addEventListener('click', function(e) {
 
-          var postPath = document.getElementsByName('postPath')[0].value;
-          var input1 = document.getElementsByName('input1')[0].value;
-          var input2 = document.getElementsByName('input2')[0].value;
-          sendAjax(postPath, {'input1':input1, 'input2':input2});
+          var name = document.getElementsByName('name')[0].value;
+          var rand_num = document.getElementsByName('rand_num')[0].value;
+          var date = document.getElementsByName('date')[0].value;
+
+          var jsonStr = {"name":name, "rand_num":rand_num, "date":date};
+          console.log("JSON값: " + jsonStr);
+
+          sendAjax('/test/test_db', jsonStr);
         })
 
 
@@ -43,19 +48,18 @@
           xhr.setRequestHeader('content-type', "application/json");
           xhr.send(data);
 
-          console.log("보냄(sendAjax): " + data);
+          console.log("sendAjax(): " + data);
 
 
           // 데이터 수신이 완료되면 표시
           xhr.addEventListener('load', function(){
-
             var result = JSON.parse(xhr.responseText);
             var resultDiv = document.querySelector('.result');
 
-            console.log("받음(addEventListener): " + result.output1 + ", " + result.output2);
-            resultDiv.innerHTML = result.input1;
+            resultDiv.innerHTML = result.result;
           });
         }
+
     </script>
 
   </body>
