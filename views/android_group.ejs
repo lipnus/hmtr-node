@@ -51,8 +51,7 @@
           xhr.addEventListener('load', function(){
             var result = JSON.parse(xhr.responseText);
             var resultDiv = document.querySelector('.result');
-
-            resultDiv.innerHTML = result.data.date;
+            resultDiv.innerHTML = result.result;
           });
         }
 
