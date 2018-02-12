@@ -46,7 +46,7 @@ router.post('/', function(req,res){
 
     if(rows[0]) {
 			responseData.result = 1;
-			responseData.data = rows[0];
+			// responseData.data = rows[0];
 		} else {
 			responseData.result = 0;
 		}
