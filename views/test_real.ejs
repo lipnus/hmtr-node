@@ -7,17 +7,20 @@
   <body>
     <h1>Value: <%= testValue %></h1>
 
-    test.ejs를 GET으로 호출
+    test_real.ejs
 
     <br/><br/><br/>
 
-    <form action="" method="post">
-       <div> - 경로 : <input type="text" name="postPath" placeholder="POST할 경로"> </div><br/>
+    <!-- <form action="" method="post"> -->
+       <!-- <div> - 경로 : <input type="text" name="postPath" placeholder="POST할 경로"> </div><br/>
        <div> - 입력1 : <input type="text" name="input1" placeholder="아무말"> </div><br/>
-       <div> - 입력2 : <input type="text" name="input2" placeholder="대잔치"> </div><br/>
-    </form>
+       <div> - 입력2 : <input type="text" name="input2" placeholder="대잔치"> </div><br/> -->
+    <!-- </form> -->
 
-    <button class="sendbtn">전송</button>
+    <button class="sendbtn">authorize</button> </br></br>
+
+    <button class="sendbtn2">scenarios</button>
+
 
     <div class="result"></div>
 
@@ -28,12 +31,20 @@
     <script>
         document.querySelector('.sendbtn').addEventListener('click', function(e) {
 
-          var postPath = document.getElementsByName('postPath')[0].value;
-          var input1 = document.getElementsByName('input1')[0].value;
-          var input2 = document.getElementsByName('input2')[0].value;
+          // var postPath = document.getElementsByName('postPath')[0].value;
+          // var input1 = document.getElementsByName('input1')[0].value;
+          // var input2 = document.getElementsByName('input2')[0].value;
+
           sendAjax('http://210.180.118.59:8061/authorize', {"client_id":"l7xx119653b3a36b4dc4be4206419bea131d", "mobile_no":"01027151024"});
 
           // sendAjax('http://210.180.118.59:8061/scenarios', {'access_token':'18'});
+        })
+
+        document.querySelector('.sendbtn2').addEventListener('click', function(e) {
+
+          // sendAjax('http://210.180.118.59:8061/authorize', {"client_id":"l7xx119653b3a36b4dc4be4206419bea131d", "mobile_no":"01027151024"});
+
+          sendAjax('http://210.180.118.59:8061/scenarios/1', {'access_token':'99b00fe6-153d-11e8-b608-0cc47a9ce276'});
         })
 
 
@@ -42,7 +53,7 @@
           data = JSON.stringify(data);
           var xhr = new XMLHttpRequest();
           xhr.open('POST', url);
-          xhr.setRequestHeader('content-type', "application/x-www-form-urlencoded");
+          xhr.setRequestHeader('content-type', "application/json");
           xhr.send(data);
 
           console.log("sendAjax(): " + data);
@@ -54,7 +65,7 @@
             var resultDiv = document.querySelector('.result');
 
             console.log("error: " + result.error + ", access_token: " + result.access_token );
-            resultDiv.innerHTML = result.access_token;
+            resultDiv.innerHTML = xhr.responseText;
           });
         }
 

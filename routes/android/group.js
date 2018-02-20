@@ -38,17 +38,22 @@ router.get('/', function(req, res){
 // 1. /test , POST실험
 router.post('/', function(req,res){
 
-	var name = req.body.name;
+	var group_code = req.body.group_code;
   var responseData = {};
 
-	var query = connection.query('select * from raw_group where name =?', [name], function(err, rows) {
+	var query = connection.query('select * from raw_group where group_code =?', [group_code], function(err, rows) {
 		if(err) throw err;
 
     if(rows[0]) {
-			responseData.result = 1;
-			// responseData.data = rows[0];
+
+			if(rows[0].group_code){
+				responseData.result = "open";
+			}else{
+				responseData.result = "close";
+			}
+
 		} else {
-			responseData.result = 0;
+			responseData.result = "none";
 		}
 		res.json(responseData)
 	})

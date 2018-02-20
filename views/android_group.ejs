@@ -14,7 +14,7 @@
 
 
     <form action="" method="post">
-       <div> - name: <input type="text" name="name"> </div><br/>
+       <div> - group_code: <input type="text" name="name"> </div><br/>
     </form>
 
     <button class="sendbtn">전송</button>
@@ -27,9 +27,9 @@
     <script>
         document.querySelector('.sendbtn').addEventListener('click', function(e) {
 
-          var name = document.getElementsByName('name')[0].value;
+          var input = document.getElementsByName('name')[0].value;
 
-          var jsonStr = {'name':name};
+          var jsonStr = {'group_code':input};
           console.log("JSON값: " + jsonStr);
 
           sendAjax('/android/group', jsonStr);
@@ -51,7 +51,7 @@
           xhr.addEventListener('load', function(){
             var result = JSON.parse(xhr.responseText);
             var resultDiv = document.querySelector('.result');
-            resultDiv.innerHTML = result.result;
+            resultDiv.innerHTML = xhr.responseText;
           });
         }
 
