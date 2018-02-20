@@ -46,8 +46,8 @@ router.post('/', function(req,res){
 
     if(rows[0]) {
 
-			if(rows[0].group_code == "open"){
-				responseData.result = "open";
+			if(rows[0].state == "open"){
+				responseData.result = rows[0].name;
 			}else{
 				responseData.result = "close";
 			}
