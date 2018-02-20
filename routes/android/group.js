@@ -46,7 +46,7 @@ router.post('/', function(req,res){
 
     if(rows[0]) {
 
-			if(rows[0].group_code){
+			if(rows[0].group_code == "open"){
 				responseData.result = "open";
 			}else{
 				responseData.result = "close";
@@ -58,14 +58,6 @@ router.post('/', function(req,res){
 		res.json(responseData)
 	})
 
-
-  // var responseData = {'result':'ok'};
-  // responseData.in1 = input1;
-  // responseData.in2 = input2;
-  //
-	// res.json( responseData );
 })
-
-
 
 module.exports = router;
