@@ -75,7 +75,7 @@ router.post('/', function(req,res){
 					responseData.result = "already";
 					responseData.date = rows[0].date;
 					responseData.count =rows[0].count;
-					responseData.user_fk = 0;
+					responseData.userinfo_pk = 0;
 					res.json(responseData);
 				});
 
@@ -113,7 +113,7 @@ router.post('/', function(req,res){
 							responseData.result = "success";
 							responseData.date = "0";
 							responseData.count = 0;
-							responseData.user_fk = rows.insertId;
+							responseData.userinfo_pk = rows.insertId;
 							res.json(responseData)
 
 						});//raw_userinfo 등록
@@ -152,7 +152,7 @@ router.post('/', function(req,res){
 				responseData.result = "success";
 				responseData.date = "0";
 				responseData.count = 0;
-				responseData.user_fk = rows.insertId;
+				responseData.userinfo_pk = rows.insertId;
 				res.json(responseData);
 
 			});//raw_userinfo 재검사등록
