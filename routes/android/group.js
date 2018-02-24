@@ -6,6 +6,9 @@ var path = require('path') // 상대경로
 
 var mysql = require('mysql') //express에 가면 mysql연동 정보가 있음
 
+//간단한 함수들을 모아놓음
+var simpleFunction = require('./jsfile/simple_function');
+
 // // // LOCAL DATABASE SETTING
 // var connection = mysql.createConnection({
 //   host: 'localhost',
@@ -31,11 +34,12 @@ connection.connect();
 router.get('/', function(req, res){
   console.log("test.js GET")
   // res.redirect('/test');
-  res.render('android_group', {'testValue' : "안드로이드 테스트"})
+
+	text = simpleFunction.testFFF();
+  res.render('android_group', {'testValue' : text})
 });
 
 
-// 1. /test , POST실험
 router.post('/', function(req,res){
 
 	var group_code = req.body.group_code;
@@ -45,7 +49,6 @@ router.post('/', function(req,res){
 		if(err) throw err;
 
     if(rows[0]) {
-
 			if(rows[0].state == "open"){
 				responseData.result = rows[0].name;
 			}else{

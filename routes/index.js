@@ -8,6 +8,7 @@ var test = require('./test/test');
 var dbtest = require('./test/test_db');
 var realtest = require('./test/test_real');
 var android_group = require('./android/group');
+var android_user = require('./android/user');
 
 
 
@@ -17,12 +18,16 @@ router.get('/', function(req, res, next) {
 });
 
 
-// 라우터설정
+//테스트
 router.use('/test/test', test);
 router.use('/test/test_db', dbtest);
 router.use('/test/test_real', realtest);
 
-
+//안드로이드
 router.use('/android/group', android_group);
+router.use('/android/user', android_user);
+
+//엥귤러
+
 
 module.exports = router;
