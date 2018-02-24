@@ -110,6 +110,8 @@ router.post('/', function(req,res){
 						query = connection.query(sql, factor, function(err,rows) {
 							if(err) throw err;
 							responseData.result = "success";
+							responseData.date = "0";
+							responseData.count = 0;
 							res.json(responseData)
 
 						});//raw_userinfo 등록
@@ -146,6 +148,8 @@ router.post('/', function(req,res){
 				if(err) throw err;
 
 				responseData.result = "success";
+				responseData.date = "0";
+				responseData.count = 0;
 				res.json(responseData);
 
 			});//raw_userinfo 재검사등록
