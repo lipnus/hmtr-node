@@ -7,9 +7,11 @@ var path = require('path');
 var test = require('./test/test');
 var dbtest = require('./test/test_db');
 var realtest = require('./test/test_real');
+
 var android_group = require('./android/group');
 var android_user = require('./android/user');
 
+var android_chat_basicinfo = require('./android/chat_basicinfo');
 
 
 /* GET home page. */
@@ -26,6 +28,8 @@ router.use('/test/test_real', realtest);
 //안드로이드
 router.use('/android/group', android_group);
 router.use('/android/user', android_user);
+router.use('/android/chat_basicinfo', android_chat_basicinfo);
+
 
 //엥귤러
 
