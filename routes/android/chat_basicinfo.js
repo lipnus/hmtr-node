@@ -61,7 +61,7 @@ function responseChat(res, sequence){
 
 	var responseData = {};
 
-	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=1 ORDER BY choice_basic.sequence ASC';
+	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=? ORDER BY choice_basic.sequence ASC';
 	factor = [sequence];
 	var query = connection.query(sql, factor, function(err, rows) {
 		if(err) throw err;
