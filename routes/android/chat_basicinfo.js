@@ -37,14 +37,16 @@ router.post('/', function(req,res){
 
 	sequence++; //클라이언트에서 받은 것 다음순서
 
+
+
 	//동봉된 답변데이터가 있을경우, raw_basicinfo에 등록한다
 	if(answer!="none"){
 
 		sql = 'insert into raw_basicinfo set ?';
 		factor = {user_fk:userinfo_pk, question_fk:script_pk, answer:answer};
+
 		query = connection.query(sql, factor, function(err,rows) {
 			if(err) throw err;
-
 			responseChat(res, sequence);
 		});
 
@@ -59,7 +61,7 @@ function responseChat(res, sequence){
 
 	var responseData = {};
 
-	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script FROM script_basicinfo, choice_basic WHERE script_basicinfo.pk = choice_basic.question_fk AND script_basicinfo.sequence=? ORDER BY choice_basic.sequence ASC';
+	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=1 ORDER BY choice_basic.sequence ASC';
 	factor = [sequence];
 	var query = connection.query(sql, factor, function(err, rows) {
 		if(err) throw err;
