@@ -61,7 +61,7 @@ function responseChat(res, sequence){
 
 	var responseData = {};
 
-	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=? ORDER BY choice_basic.sequence ASC';
+	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script, information FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=? ORDER BY choice_basic.sequence ASC';
 	factor = [sequence];
 	var query = connection.query(sql, factor, function(err, rows) {
 		if(err) throw err;
@@ -73,11 +73,11 @@ function responseChat(res, sequence){
 		responseData.category = rows[0].category;
 		responseData.experienced = rows[0].experienced;
 
-		// //답변
+		//답변
 		responseData.answer = [];
 		if(rows[0].type == "question"){
 			for(var i=0; i<rows.length; i++){
-				var obj = {choice_pk:rows[i].choice_pk, choice:rows[i].choice, custom:rows[i].custom_script};
+				var obj = {choice_pk:rows[i].choice_pk, choice:rows[i].choice, custom:rows[i].custom_script, information:rows[i].information};
 				responseData.answer.push(obj);
 			}//for
 		}//if
