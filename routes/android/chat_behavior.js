@@ -24,7 +24,7 @@ connection.connect();
 
 router.get('/', function(req, res){
   console.log("test.js GET")
-  res.render('android_chatbasic', {'testValue' : "기본정보 대화"})
+  res.render('android_chat_behavior', {'testValue' : "행동유형"})
 });
 
 
@@ -42,7 +42,7 @@ router.post('/', function(req,res){
 	//동봉된 답변데이터가 있을경우, raw_basicinfo에 등록한다
 	if(answer!="none"){
 
-		sql = 'insert into raw_basicinfo set ?';
+		sql = 'insert into raw_behavior set ?';
 		factor = {user_fk:userinfo_pk, question_fk:script_pk, answer:answer};
 
 		query = connection.query(sql, factor, function(err,rows) {
@@ -61,7 +61,7 @@ function responseChat(res, sequence){
 
 	var responseData = {};
 
-	sql = 'SELECT script_basicinfo.pk AS script_pk, script_basicinfo.sequence AS script_sequence, script, type, category, experienced, choice_basic.pk AS choice_pk, choice_basic.sequence AS choice_sequence, choice, custom_script, information FROM script_basicinfo LEFT JOIN choice_basic ON script_basicinfo.pk = choice_basic.question_fk WHERE script_basicinfo.sequence=? ORDER BY choice_basic.sequence ASC';
+	sql = 'SELECT script_behavior.pk AS script_pk, script_behavior.sequence AS script_sequence, script, type, experienced, choice_behavior.pk AS choice_pk, choice_behavior.sequence AS choice_sequence, choice, custom_script, information FROM script_behavior LEFT JOIN choice_behavior ON 1 WHERE script_behavior.sequence=? ORDER BY choice_behavior.sequence ASC;';
 	factor = [sequence];
 	var query = connection.query(sql, factor, function(err, rows) {
 		if(err) throw err;
@@ -71,6 +71,7 @@ function responseChat(res, sequence){
 		responseData.script_pk = rows[0].script_pk;
 		responseData.script = rows[0].script;
 		responseData.experienced = rows[0].experienced;
+
 
 		//답변
 		responseData.answer = [];
@@ -83,8 +84,6 @@ function responseChat(res, sequence){
 
 		res.json(responseData);
 	});
-
 }
-
 
 module.exports = router;
