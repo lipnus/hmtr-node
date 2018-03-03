@@ -66,7 +66,6 @@ router.post('/', function(req,res){
 		}
 
 
-
 	//============================================================================
 	// 복수선택
 	//============================================================================
@@ -107,7 +106,7 @@ function responseChat(res, sequence){
 
 	var responseData = {};
 
-	sql = 'SELECT script_aptitude.pk AS script_pk, script_aptitude.sequence AS script_sequence, script, type, experienced, choice_aptitude.pk AS choice_pk, choice_aptitude.sequence AS choice_sequence, choice, custom_script, information FROM script_aptitude LEFT JOIN choice_aptitude ON 1 WHERE script_aptitude.sequence=? ORDER BY choice_aptitude.sequence ASC;';
+	sql = 'SELECT script_aptitude.pk AS script_pk, script_aptitude.sequence AS script_sequence, script, type, experienced, choice_aptitude.pk AS choice_pk, choice_aptitude.sequence AS choice_sequence, choice, custom_script, information FROM script_aptitude LEFT JOIN choice_aptitude ON script_aptitude.pk = choice_aptitude.question_fk WHERE script_aptitude.sequence=? ORDER BY choice_aptitude.sequence ASC;';
 
 	factor = [sequence];
 
