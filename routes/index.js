@@ -13,6 +13,7 @@ var android_user = require('./android/user');
 
 var android_chat_basicinfo = require('./android/chat_basicinfo');
 var android_chat_behavior = require('./android/chat_behavior');
+var android_chat_aptitude = require('./android/chat_aptitude');
 
 
 /* GET home page. */
@@ -31,6 +32,7 @@ router.use('/android/group', android_group);
 router.use('/android/user', android_user);
 router.use('/android/chat_basicinfo', android_chat_basicinfo);
 router.use('/android/chat_behavior', android_chat_behavior);
+router.use('/android/chat_aptitude', android_chat_aptitude);
 
 
 //엥귤러

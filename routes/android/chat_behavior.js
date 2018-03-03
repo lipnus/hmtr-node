@@ -72,7 +72,6 @@ function responseChat(res, sequence){
 		responseData.script = rows[0].script;
 		responseData.experienced = rows[0].experienced;
 
-
 		//답변
 		responseData.answer = [];
 		if(rows[0].type == "question"){
