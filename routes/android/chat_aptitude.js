@@ -69,7 +69,7 @@ router.post('/', function(req,res){
 
 
 	//============================================================================
-	// 복수선택
+	// 복수선택(answer_type이 single이 아닌경우)
 	//============================================================================
 	}else{
 		var total; //전체 복수선택 문항개수
@@ -97,7 +97,9 @@ router.post('/', function(req,res){
 			//[중간]
 
 			//***등록
-			console.log("중간부분 복수답안 입력");
+			var answerList = JSON.parse(answer);
+			console.log("중간부분 복수답안 입력" + answerList[0].answer);
+			
 			sequence = Number(sequence) + 0.01;
 			responseMultiChat(res, sequence, integer_sequence, count);
 		}
