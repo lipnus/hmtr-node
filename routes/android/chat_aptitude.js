@@ -89,6 +89,7 @@ router.post('/', function(req,res){
 			//[끝]
 
 			//***등록
+			console.log("끝부분 복수답안 입력");
 			integer_sequence = Number(integer_sequence) +1;
 			responseChat(res, integer_sequence);
 
@@ -96,6 +97,7 @@ router.post('/', function(req,res){
 			//[중간]
 
 			//***등록
+			console.log("중간부분 복수답안 입력");
 			sequence = Number(sequence) + 0.01;
 			responseMultiChat(res, sequence, integer_sequence, count);
 		}
