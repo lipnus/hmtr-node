@@ -61,6 +61,8 @@ router.post('/', function(req,res){
 				responseChat(res, sequence);
 			});
 
+			// resSponseChat(res, sequence);
+
 		} else{
 			responseChat(res, sequence);
 		}
@@ -70,7 +72,7 @@ router.post('/', function(req,res){
 	// 복수선택
 	//============================================================================
 	}else{
-		var total;
+		var total; //전체 복수선택 문항개수
 		var count;
 
 		if(answer_type=="multi_1"){ total=60; count = 10; } //총 60개, 10개씩 끊어서
@@ -123,7 +125,9 @@ function responseChat(res, sequence){
 		responseData.answer = [];
 		if(rows[0].type == "question"){
 			for(var i=0; i<rows.length; i++){
+
 				var obj = {choice_pk:rows[i].choice_pk, choice:rows[i].choice, custom:rows[i].custom_script, information:rows[i].information};
+
 				responseData.answer.push(obj);
 			}//for
 		}//if
@@ -150,7 +154,6 @@ function responseMultiChat(res, sequence, integer_sequence, count){
 		responseData.script_pk = rows[0].script_pk;
 		responseData.script = rows[0].script;
 		responseData.experienced = rows[0].experienced;
-
 
 
 		//답변
