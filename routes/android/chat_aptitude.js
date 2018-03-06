@@ -61,7 +61,6 @@ router.post('/', function(req,res){
 				responseChat(res, sequence);
 			});
 
-			// resSponseChat(res, sequence);
 
 		} else{
 			responseChat(res, sequence);
@@ -79,29 +78,62 @@ router.post('/', function(req,res){
 		else if(answer_type=="multi_2"){ total=32; count=4; } //총32개, 4개식 끊어서
 		else if(answer_type=="multi_3"){ total=0; count=99; } // 모두선택, 가진것을 모두 보냄
 
-
+		//[복수선택 시작]
 		if(lower_sequence==0){
-			//[시작]
+
 			sequence = Number(sequence) + 0.01;
 			responseMultiChat(res, sequence, integer_sequence, count);
 
-		}else if(lower_sequence==total || answer_type=="multi_3" ){
-			//[끝]
+		}
 
-			//***등록
-			console.log("끝부분 복수답안 입력");
-			integer_sequence = Number(integer_sequence) +1;
-			responseChat(res, integer_sequence);
+		//[복수선택 끝]
+		else if(lower_sequence==total || answer_type=="multi_3" ){
 
-		}else{
-			//[중간]
+			// ***등록
+			var answerList = JSON.parse(answer); //배열 안에 object가 들어있음
 
-			//***등록
-			var answerList = JSON.parse(answer);
-			console.log("중간부분 복수답안 입력" + answerList[0].answer);
-			
-			sequence = Number(sequence) + 0.01;
-			responseMultiChat(res, sequence, integer_sequence, count);
+			arr = [];
+			for(var i=0; i<answerList.length; i++){
+				arr.push([userinfo_pk ,answerList[i].question_pk, answerList[i].answer]);
+			}
+
+
+			sql = 'insert into raw_aptitude (user_fk, question_fk, answer) VALUE ?';
+			factor = arr;
+
+			query = connection.query(sql, [factor], function(err,rows) {
+				if(err) throw err;
+
+				integer_sequence = Number(integer_sequence) +1;
+				responseChat(res, integer_sequence);
+			});
+
+
+
+		}
+
+		//[복수선택 중간]
+		else{
+
+			// ***등록
+			var answerList = JSON.parse(answer); //배열 안에 object가 들어있음
+
+			arr = [];
+			for(var i=0; i<answerList.length; i++){
+				arr.push([userinfo_pk ,answerList[i].question_pk, answerList[i].answer]);
+			}
+
+
+			sql = 'insert into raw_aptitude (user_fk, question_fk, answer) VALUE ?';
+			factor = arr;
+
+			query = connection.query(sql, [factor], function(err,rows) {
+				if(err) throw err;
+
+				sequence = Number(sequence) + 0.01;
+				responseMultiChat(res, sequence, integer_sequence, count);
+			});
+
 		}
 	}
 })//post
