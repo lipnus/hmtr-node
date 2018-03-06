@@ -47,13 +47,13 @@ router.post('/', function(req,res){
 	else{
 
 		console.log("저장할게 있음");
-		
+
 		sql = 'insert into raw_balance set ?';
 		factor = {user_fk:userinfo_pk, question_fk:root_sequence, answer:answer};
 
 		query = connection.query(sql, factor, function(err,rows) {
 			if(err) throw err;
-			responseChat(res, sequence);
+			responseChat(res, next_sequence);
 		});
 	}
 })//post
