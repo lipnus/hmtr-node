@@ -37,14 +37,8 @@ router.post('/', function(req,res){
 
 
 
-	//저장할게 없음
-	if(answer!="none"){
-		console.log("스크립트");
-		responseChat(res, next_sequence);
-	}
-
 	//저장할 게 있음(1~5의 값)
-	else{
+	if(answer!="none"){
 
 		console.log("저장할게 있음");
 
@@ -55,6 +49,14 @@ router.post('/', function(req,res){
 			if(err) throw err;
 			responseChat(res, next_sequence);
 		});
+	}
+
+	//스크립트
+	else{
+
+		console.log("스크립트");
+		responseChat(res, next_sequence);
+
 	}
 })//post
 
