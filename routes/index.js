@@ -8,15 +8,22 @@ var test = require('./test/test');
 var dbtest = require('./test/test_db');
 var realtest = require('./test/test_real');
 
+
 var android_group = require('./android/group');
 var android_user = require('./android/user');
-
 var android_chat_basicinfo = require('./android/chat_basicinfo');
 var android_chat_behavior = require('./android/chat_behavior');
 var android_chat_aptitude = require('./android/chat_aptitude');
 var android_chat_balance = require('./android/chat_balance');
 var android_serverinfo = require('./android/serverinfo');
 var android_delete_aptitude = require('./android/delete_aptitude');
+
+
+var server_caldata = require('./caldata');
+var angular_rawdata = require('./angular/rawdata');
+var angular_group = require('./angular/group');
+var angular_authentication = require('./angular/authentication');
+var angular_students = require('./angular/students');
 
 
 /* GET home page. */
@@ -41,6 +48,9 @@ router.use('/android/serverinfo', android_serverinfo);
 router.use('/android/delete_aptitude', android_delete_aptitude);
 
 //엥귤러
-
+router.use('/angular/rawdata', angular_rawdata);
+router.use('/angular/group', angular_group);
+router.use('/angular/students', angular_students);
+router.use('/angular/authentication', angular_authentication);
 
 module.exports = router;

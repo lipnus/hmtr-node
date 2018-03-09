@@ -13,7 +13,9 @@ var router = require('./routes/index')
 // var index = require('./routes/index');
 // var users = require('./routes/users');
 
-
+//allow origin 때문에 필요
+var cors = require('cors');
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
