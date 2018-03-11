@@ -20,6 +20,8 @@ var android_delete_aptitude = require('./android/delete_aptitude');
 
 
 var server_caldata = require('./caldata');
+var server_report = require('./report');
+
 var angular_rawdata = require('./angular/rawdata');
 var angular_group = require('./angular/group');
 var angular_authentication = require('./angular/authentication');
@@ -46,6 +48,10 @@ router.use('/android/chat_aptitude', android_chat_aptitude);
 router.use('/android/chat_balance', android_chat_balance);
 router.use('/android/serverinfo', android_serverinfo);
 router.use('/android/delete_aptitude', android_delete_aptitude);
+
+//서버
+router.use('/caldata', server_caldata);
+router.use('/report', server_report);
 
 //엥귤러
 router.use('/angular/rawdata', angular_rawdata);
