@@ -19,6 +19,24 @@ var balance_weight = [
 /*course*/	[[0,0], [5, 9], [1, 7], [8, 10], [1, 4], [5, 9], [1, 7], [8, 10], [1, 4], [5, 9], [4, 7], [1, 10], [1, 4]],
 /*entrance*/	[[0,0], [2, 7], [3, 6], [1, 9], [4, 10], [2, 7], [1, 3], [8, 9], [1, 8], [3, 7], [5, 9], [6, 10], [1, 8]]
 ];
+var min_score = [0, 97,  91, 82, 68, 52, 37, 29, 23, 20];
+var max_score = [0, 100, 97, 91, 82, 68, 52, 37, 29, 23];
+
+var balance_learning = [
+	[0, 50, 48, 44.5, 33.5, 29, 17, 11, 7.5, 5.5],
+	[0, 40, 38, 34, 27, 15.5, 8.5, 4.5, 2.5, 2],
+	[30, 27, 23, 14, 10, 7, 5, 4, 3.5]
+];
+var balance_course = [
+	[0, 30, 29, 27.5, 24.5, 19.5, 11.5, 6.5, 3.5, 2],
+	[0, 30, 28, 24.5, 20.5, 13, 9, 6.5, 4.5, 3.5],
+	[0, 20, 19, 17, 14, 8, 5, 3, 2, 1]
+];
+var balance_entrance = [
+	[0, 20, 19.5, 18.5, 16.5, 13.5, 7.5, 4.5, 2.5, 1.5],
+	[0, 30, 28, 24.5, 20.5, 13, 9, 6.5, 4.5, 3.5],
+	[0, 50, 46, 37.5, 26, 17.5, 13.5, 9.5, 6.5, 4.5]
+];
 
 var behavior_type = {
 	cw : ['책임', '현실', '대비', '조언', '체계'],
@@ -292,12 +310,17 @@ router.post('/', function(req, res){
 			else if(result.month <= 5) quater = 2;
 			else if(result.month <= 8) quater = 3;
 			else if(result.month <= 11) quater = 4;
-			if(result.grade == 7) quater += 0;
-			else if(result.grade == 8) quater += 4;
-			else if(result.grade == 9) quater += 8;
-			else{
-				quater = 0;
-				weight = 2;
+			if(result.grade <= 7){
+				quater += 0;
+				grade_temp = 0;
+			}
+			else if(result.grade == 8){
+				quater += 4;
+				grade_temp = 1;
+			}
+			else if(result.grade >= 9){
+				quater += 8;
+				grade_temp = 2;
 			}
 			sql = 'SELECT script_balance.category AS category, raw_balance.answer AS score FROM script_balance, raw_balance WHERE raw_balance.user_fk = ? AND script_balance.sequence = raw_balance.question_fk GROUP BY raw_balance.question_fk ORDER BY raw_balance.question_fk ASC';
 			query = connection.query(sql, userinfo_pk, function(err, rows){
@@ -350,12 +373,22 @@ router.post('/', function(req, res){
 				result.check_score = 2 * (rows[7].score + rows[8].score + rows[9].score + rows[11].score + rows[12].score + rows[20].score + rows[23].score + rows[25].score + rows[26].score + rows[28].score);
 				result.process_score = 2 * (rows[4].score + rows[5].score + rows[6].score + rows[10].score + rows[13].score + rows[14].score + rows[15].score + rows[18].score + rows[21].score + rows[29].score);
 				result.result_score = 2 * (rows[0].score + rows[1].score + rows[2].score + rows[3].score + rows[16].score + rows[17].score + rows[19].score + rows[22].score + rows[24].score + rows[27].score);
+				for(var i=1; i<=9; i++){
+					if(result.learning_score>=min_score[i] && result.learning_score<=max_score[i]) result.learning_grade = i;
+					if(result.course_score>=min_score[i] && result.course_score<=max_score[i]) result.course_grade = i;
+					if(result.entrance_score>=min_score[i] && result.entrance_score<=max_score[i]) result.entrance_grade = i;
+					if(result.check_score>=min_score[i] && result.check_score<=max_score[i]) result.check_grade = i;
+					if(result.process_score>=min_score[i] && result.process_score<=max_score[i]) result.process_grade = i;
+					if(result.result_score>=min_score[i] && result.result_score<=max_score[i]) result.result_grade = i;
+				}
+				result.total_score_lce = balance_learning[grade_temp][result.learning_grade] + balance_course[grade_temp][result.course_grade] + balance_entrance[grade_temp][result.entrance_grade];
+				result.total_score_cpr = balance_learning[grade_temp][result.check_grade] + balance_course[grade_temp][result.process_grade] + balance_entrance[grade_temp][result.result_grade];
 				sql2 = 'INSERT INTO cal_balance SET ?';
 				factor = {user_fk:userinfo_pk, learning_score:result.learning_score, course_score:result.course_score,
 					 entrance_score:result.entrance_score, learning_best:result.learning_best, learning_worst:result.learning_worst,
 					 course_best:result.course_best, course_worst:result.course_worst, entrance_best:result.entrance_best,
 					 entrance_worst:result.entrance_worst, check_score:result.check_score, process_score:result.process_score,
-					 result_score:result.result_score };
+					 result_score:result.result_score, total_score_lce:result.total_score_lce, total_score_cpr:result.total_score_cpr};
 				query = connection.query(sql2, factor, function(err, rows){
 					if(err) throw err;
 				});

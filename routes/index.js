@@ -26,6 +26,7 @@ var angular_rawdata = require('./angular/rawdata');
 var angular_group = require('./angular/group');
 var angular_authentication = require('./angular/authentication');
 var angular_students = require('./angular/students');
+var angular_statistics = require('./angular/statistics');
 
 
 /* GET home page. */
@@ -58,5 +59,6 @@ router.use('/angular/rawdata', angular_rawdata);
 router.use('/angular/group', angular_group);
 router.use('/angular/students', angular_students);
 router.use('/angular/authentication', angular_authentication);
+router.use('/angular/statistics', angular_statistics);
 
 module.exports = router;
