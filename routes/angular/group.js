@@ -37,6 +37,18 @@ router.post('/', function(req, res){
       res.json(rows);
     });
   }
+	else if(order == "find"){
+		sql = 'SELECT name FROM raw_group WHERE raw_group.name LIKE ?';
+		factor = '%' + name + '%';
+		result = [];
+		query = connection.query(sql, factor, function(err, rows){
+			if(err) throw err;
+			for(var i=0; i<rows.length; i++){
+				result[i]=rows[i].name;
+			}
+			res.json(result);
+		})
+	}
   else if(order == "make"){
     var random;
     query = connection.query('SELECT * FROM raw_group WHERE 1', '', function(err, rows) {
