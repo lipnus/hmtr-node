@@ -86,6 +86,10 @@ router.post('/', function(req, res){
 			temp_userinfo1[i]=rows[i].userinfo_pk;
 		}
 		console.log("1:"+temp_userinfo1);
+		if(temp_userinfo1.length==0){
+			res.json({msg:"No result."});
+		}
+		else{
 		sql = "SELECT raw_userinfo.pk AS userinfo_pk FROM raw_userinfo WHERE raw_userinfo.pk IN("+temp_userinfo1+")"
 		where = '';
 		if(input.interesting_plan.length!=0){
@@ -113,6 +117,10 @@ router.post('/', function(req, res){
 				temp_userinfo2[i]=rows[i].userinfo_pk;
 			}
 			console.log("2:"+temp_userinfo2);
+			if(temp_userinfo2.length==0){
+				res.json({msg:"No result."});
+			}
+			else{
 			sql = "SELECT raw_userinfo.pk AS userinfo_pk FROM raw_userinfo WHERE raw_userinfo.pk IN("+temp_userinfo2+")";
 			where = '';
 		  if(input.support!=''){
@@ -129,6 +137,10 @@ router.post('/', function(req, res){
 					temp_userinfo3[i]=rows[i].userinfo_pk;
 				}
 				console.log("3:"+temp_userinfo3);
+				if(temp_userinfo3.length==0){
+					res.json({msg:"No result."});
+				}
+				else{
 				sql = "SELECT raw_userinfo.pk AS userinfo_pk, raw_user.name AS name, raw_user.birth AS birth, raw_userinfo.phone AS phone, raw_userinfo.count AS count, cal_behavior.best_score_cskd, cal_behavior.cw_score AS cw_score, cal_behavior.sw_score AS sw_score, cal_behavior.kw_score AS kw_score, cal_behavior.dw_score AS dw_score, cal_behavior.cw_best_keyword, cal_behavior.sw_best_keyword, cal_behavior.kw_best_keyword, cal_behavior.dw_best_keyword, cal_aptitude.best_score_pnc, cal_aptitude.pnc_A AS pnc_A, cal_aptitude.pnc_B AS pnc_B, cal_aptitude.pnc_C AS pnc_C, cal_aptitude.pnc_D AS pnc_D, cal_aptitude.pnc_E AS pnc_E, cal_aptitude.pnc_F AS pnc_F, cal_aptitude.best_score_stress, cal_aptitude.stress_A AS stress_A, cal_aptitude.stress_B AS stress_B, cal_aptitude.stress_C AS stress_C, cal_aptitude.stress_D AS stress_D, cal_aptitude.stress_E AS stress_E, cal_aptitude.stress_F AS stress_F, cal_aptitude.stress_G AS stress_G, cal_aptitude.stress_H AS stress_H, cal_balance.learning_score, cal_balance.course_score, cal_balance.entrance_score, cal_balance.check_score, cal_balance.process_score, cal_balance.result_score, cal_balance.learning_best, cal_balance.course_best, cal_balance.entrance_best FROM raw_user, raw_userinfo, cal_behavior, cal_aptitude, cal_balance, raw_group WHERE raw_userinfo.pk IN("+temp_userinfo3+") AND raw_user.pk=raw_userinfo.user_fk AND cal_behavior.user_fk=raw_userinfo.pk AND cal_aptitude.user_fk=raw_userinfo.pk AND cal_balance.user_fk=raw_userinfo.pk";
 				where = '';
 				if(input.groups.length!=0){
@@ -161,22 +173,22 @@ router.post('/', function(req, res){
 			    where = where + " AND raw_userinfo.pk IN(SELECT raw_aptitude.user_fk AS userinfo_pk FROM choice_aptitude, raw_aptitude WHERE choice_aptitude.pk-raw_aptitude.answer AND raw_aptitude.question_fk=" + input.activity_wish + " AND raw_aptitude.answer=1 GROUP BY userinfo_pk)";
 			  }
 			  if(input.learning_grade!=''){
-			    where = where + " AND cal_balance.learning_score >=" + min_score[input.learning_grade[1]] + " AND cal_balance.learning_score <=" + max_score[input.learning_grade[0]];
+			    where = where + " AND cal_balance.learning_score >=" + min_score[input.learning_grade[0]] + " AND cal_balance.learning_score <=" + max_score[input.learning_grade[1]];
 			  }
 			  if(input.course_grade!=''){
-			    where = where + " AND cal_balance.course_score >=" + min_score[input.course_grade[1]] + " AND cal_balance.course_score <=" + max_score[input.course_grade[0]];
+			    where = where + " AND cal_balance.course_score >=" + min_score[input.course_grade[0]] + " AND cal_balance.course_score <=" + max_score[input.course_grade[1]];
 			  }
 			  if(input.entrance_grade!=''){
-			    where = where + " AND cal_balance.entrance_score >=" + min_score[input.entrance_grade[1]] + " AND cal_balance.entrance_score <=" + max_score[input.entrance_grade[0]];
+			    where = where + " AND cal_balance.entrance_score >=" + min_score[input.entrance_grade[0]] + " AND cal_balance.entrance_score <=" + max_score[input.entrance_grade[1]];
 			  }
 			  if(input.check_grade!=''){
-			    where = where + " AND cal_balance.check_score >=" + min_score[input.check_grade[1]] + " AND cal_balance.check_score <=" + max_score[input.check_grade[0]];
+			    where = where + " AND cal_balance.check_score >=" + min_score[input.check_grade[0]] + " AND cal_balance.check_score <=" + max_score[input.check_grade[1]];
 			  }
 			  if(input.process_grade!=''){
-			    where = where + " AND cal_balance.process_score >=" + min_score[input.process_grade[1]] + " AND cal_balance.process_score <=" + max_score[input.process_grade[0]];
+			    where = where + " AND cal_balance.process_score >=" + min_score[input.process_grade[0]] + " AND cal_balance.process_score <=" + max_score[input.process_grade[1]];
 			  }
 			  if(input.result_grade!=''){
-			    where = where + " AND cal_balance.result_score >=" + min_score[input.result_grade[1]] + " AND cal_balance.result_score <=" + max_score[input.result_grade[0]];
+			    where = where + " AND cal_balance.result_score >=" + min_score[input.result_grade[0]] + " AND cal_balance.result_score <=" + max_score[input.result_grade[1]];
 			  }
 			  sql = sql + where + " GROUP BY raw_userinfo.pk";
 				result = {};
@@ -184,10 +196,10 @@ router.post('/', function(req, res){
 				var query = connection.query(sql, temp_userinfo3, function(err, rows){
 			    if(err) throw err;
 					if(rows.length==0){
-						res.json({msg:"해당하는 학생이 없습니다."});
+						res.json({msg:"No result."});
 					}
 					else{
-						result.msg = "분석을 완료했습니다.";
+						result.msg = "Complete.";
 						result.students=rows;
 						var userinfo_pk = [];
 						for(var i=0; i<rows.length; i++){
@@ -196,6 +208,7 @@ router.post('/', function(req, res){
 						saved_rows=rows;
 						console.log("4:"+userinfo_pk);
 						sql = "SELECT raw_basicinfo.question_fk, script_basicinfo.script AS question, script_basicinfo.category AS category_high, '' AS category_low, raw_basicinfo.answer AS answer_pk, choice_basic.choice AS answer	FROM script_basicinfo, choice_basic, raw_basicinfo WHERE raw_basicinfo.question_fk = script_basicinfo.pk AND raw_basicinfo.answer = choice_basic.pk AND raw_basicinfo.user_fk IN("+userinfo_pk+")	UNION ALL SELECT raw_aptitude.question_fk, script_aptitude.script AS question, script_aptitude.category_high AS category_high, script_aptitude.category_low AS category_low, raw_aptitude.answer AS answer_pk, choice_aptitude.choice AS answer FROM script_aptitude, choice_aptitude, raw_aptitude WHERE raw_aptitude.user_fk IN("+userinfo_pk+") AND raw_aptitude.question_fk = script_aptitude.pk AND ( (raw_aptitude.answer = choice_aptitude.pk AND raw_aptitude.answer>=1) OR (raw_aptitude.answer < 1 AND raw_aptitude.answer+2 = choice_aptitude.pk) ) UNION ALL SELECT raw_balance.question_fk, script_balance.script AS question, script_balance.category AS category_high, '' AS category_low, raw_balance.answer AS answer_pk, choice_balance.result AS answer FROM script_balance, choice_balance, raw_balance	WHERE raw_balance.user_fk IN("+userinfo_pk+") AND raw_balance.question_fk = script_balance.sequence AND raw_balance.answer = choice_balance.pk ORDER BY category_high ASC"
+						console.log(sql);
 						var query = connection.query(sql, function(err, rows){
 							if(err) throw err;
 							result.interesting_plan = {learning_count:0, course_count:0, entrance_count:0};
@@ -349,8 +362,11 @@ router.post('/', function(req, res){
 						});
 					}
 			  });
+			}
 			});
+		}
 		});
+	}
 	});
 });
 
