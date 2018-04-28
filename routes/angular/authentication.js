@@ -23,7 +23,7 @@ router.post('/', function(req, res){
   var user;
   var query = connection.query(sql, factor, function(err, rows){
     if(err) throw err;
-    console.log(rows);
+    // console.log(rows);
     if(rows.length>0){
       if(rows[0].password == password){
         user = {state:'success', id:rows[0].id, password:rows[0].password, msg:''};

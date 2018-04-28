@@ -18,6 +18,8 @@ function qna(question, answer){
 	this.answer = answer;
 }
 
+var balance_table = ['', '매우미흡', '미흡', '보통', '우수', '매우우수'];
+
 connection.connect();
 
 router.post('/', function(req, res){
@@ -59,7 +61,7 @@ router.post('/', function(req, res){
 		balance_entrance:[]
 	}
 
-  sql = "SELECT script_basicinfo.script AS question, script_basicinfo.category AS category_high, '' AS category_low, raw_basicinfo.answer AS answer_pk, choice_basic.choice AS answer	FROM script_basicinfo, choice_basic, raw_basicinfo WHERE raw_basicinfo.question_fk = script_basicinfo.pk AND raw_basicinfo.answer = choice_basic.pk AND raw_basicinfo.user_fk = ?	UNION	SELECT script_behavior.script AS question, script_behavior.category_high AS category_high, script_behavior.category_low AS category_low, raw_behavior.answer AS answer_pk, choice_behavior.choice AS answer FROM script_behavior, choice_behavior, raw_behavior WHERE raw_behavior.question_fk = script_behavior.pk AND raw_behavior.answer = choice_behavior.pk AND raw_behavior.user_fk = ? UNION SELECT script_aptitude.script AS question, script_aptitude.category_high AS category_high, script_aptitude.category_low AS category_low, raw_aptitude.answer AS answer_pk, choice_aptitude.choice AS answer FROM script_aptitude, choice_aptitude, raw_aptitude WHERE raw_aptitude.user_fk = ? AND raw_aptitude.question_fk = script_aptitude.pk AND ( raw_aptitude.answer = choice_aptitude.pk OR raw_aptitude.answer = 0 OR raw_aptitude.answer = -1 ) GROUP BY raw_aptitude.question_fk UNION SELECT script_balance.script AS question, script_balance.category AS category_high, '' AS category_low, raw_balance.answer AS answer_pk, choice_balance.result AS answer FROM script_balance, choice_balance, raw_balance	WHERE raw_balance.user_fk = ? AND raw_balance.question_fk = script_balance.sequence AND raw_balance.answer = choice_balance.pk ORDER BY category_high ASC";
+  sql = "SELECT script_basicinfo.script AS question, script_basicinfo.category AS category_high, '' AS category_low, raw_basicinfo.answer AS answer_pk, choice_basic.choice AS answer	FROM script_basicinfo, choice_basic, raw_basicinfo WHERE raw_basicinfo.question_fk = script_basicinfo.pk AND raw_basicinfo.answer = choice_basic.pk AND raw_basicinfo.user_fk = ?	UNION	SELECT script_behavior.script AS question, script_behavior.category_high AS category_high, script_behavior.category_low AS category_low, raw_behavior.answer AS answer_pk, choice_behavior.choice AS answer FROM script_behavior, choice_behavior, raw_behavior WHERE raw_behavior.question_fk = script_behavior.pk AND raw_behavior.answer = choice_behavior.pk AND raw_behavior.user_fk = ? UNION SELECT script_aptitude.script AS question, script_aptitude.category_high AS category_high, script_aptitude.category_low AS category_low, raw_aptitude.answer AS answer_pk, choice_aptitude.choice AS answer FROM script_aptitude, choice_aptitude, raw_aptitude WHERE raw_aptitude.user_fk = ? AND raw_aptitude.question_fk = script_aptitude.pk AND ( raw_aptitude.answer = choice_aptitude.pk OR raw_aptitude.answer = 0 OR raw_aptitude.answer = -1 ) GROUP BY raw_aptitude.question_fk UNION SELECT script_balance.script AS question, script_balance.category AS category_high, '' AS category_low, raw_balance.answer AS answer_pk, choice_balance.result AS answer FROM script_balance, choice_balance, raw_balance	WHERE raw_balance.user_fk = ? AND raw_balance.question_fk = script_balance.sequence AND raw_balance.answer = choice_balance.pk";
   var query = connection.query(sql, [userinfo_pk, userinfo_pk, userinfo_pk, userinfo_pk], function(err, rows){
     if(err) throw err;
 		for(var i=0; i<rows.length; i++){
@@ -168,13 +170,13 @@ router.post('/', function(req, res){
 				result.aptitude_needs[result.aptitude_needs.length] = new qna(rows[i].question, rows[i].answer);
 			}
 			else if(rows[i].category_high == '학습'){
-				result.balance_learning[result.balance_learning.length] = new qna(rows[i].question, rows[i].answer);
+				result.balance_learning[result.balance_learning.length] = new qna(rows[i].question, balance_table[rows[i].answer_pk]);
 			}
 			else if(rows[i].category_high == '진로'){
-				result.balance_course[result.balance_course.length] = new qna(rows[i].question, rows[i].answer);
+				result.balance_course[result.balance_course.length] = new qna(rows[i].question, balance_table[rows[i].answer_pk]);
 			}
 			else if(rows[i].category_high == '진학'){
-				result.balance_entrance[result.balance_entrance.length] = new qna(rows[i].question, rows[i].answer);
+				result.balance_entrance[result.balance_entrance.length] = new qna(rows[i].question, balance_table[rows[i].answer_pk]);
 			}
 		}
     res.json(result);

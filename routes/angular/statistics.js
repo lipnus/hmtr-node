@@ -34,7 +34,7 @@ var max_score = [0, 100, 97, 91, 82, 68, 52, 37, 29, 23];
 // }
 router.post('/', function(req, res){
   input = {};
-	console.log(req.body);
+	// console.log(req.body);
   input.groups = req.body.groups; // 복수입력
   input.gender = req.body.gender; // 남/녀/무관 중 택1
   input.grade = req.body.grade; // 중1, 중2, 중3, 고1, 고2, 고3, N수생 복수입력
@@ -79,13 +79,13 @@ router.post('/', function(req, res){
 		where = where + ") GROUP BY userinfo_pk)";
 	}
 	sql = sql + where + " GROUP BY raw_userinfo.pk";
-	console.log("sql1:" + sql);
+	// console.log("sql1:" + sql);
 	query = connection.query(sql, function(err, rows){
 		if(err) throw err;
 		for(var i=0; i<rows.length; i++){
 			temp_userinfo1[i]=rows[i].userinfo_pk;
 		}
-		console.log("1:"+temp_userinfo1);
+		// console.log("1:"+temp_userinfo1);
 		if(temp_userinfo1.length==0){
 			res.json({msg:"No result."});
 		}
@@ -110,13 +110,13 @@ router.post('/', function(req, res){
 	    where = where + ") GROUP BY userinfo_pk)";
 	  }
 		sql = sql + where + " GROUP BY raw_userinfo.pk";
-		console.log("sql2:" + sql);
+		// console.log("sql2:" + sql);
 		query = connection.query(sql, temp_userinfo1, function(err, rows){
 			if(err) throw err;
 			for(var i=0; i<rows.length; i++){
 				temp_userinfo2[i]=rows[i].userinfo_pk;
 			}
-			console.log("2:"+temp_userinfo2);
+			// console.log("2:"+temp_userinfo2);
 			if(temp_userinfo2.length==0){
 				res.json({msg:"No result."});
 			}
@@ -130,13 +130,13 @@ router.post('/', function(req, res){
 		    where = where + " AND raw_userinfo.pk IN(SELECT raw_aptitude.user_fk AS userinfo_pk FROM choice_aptitude, raw_aptitude WHERE choice_aptitude.pk=raw_aptitude.answer AND raw_aptitude.question_fk=119 AND choice_aptitude.choice='" + input.demand + "' GROUP BY userinfo_pk)";
 		  }
 			sql = sql + where + " GROUP BY raw_userinfo.pk";
-			console.log("sql3:" + sql);
+			// console.log("sql3:" + sql);
 			query = connection.query(sql, temp_userinfo2, function(err, rows){
 				if(err) throw err;
 				for(var i=0; i<rows.length; i++){
 					temp_userinfo3[i]=rows[i].userinfo_pk;
 				}
-				console.log("3:"+temp_userinfo3);
+				// console.log("3:"+temp_userinfo3);
 				if(temp_userinfo3.length==0){
 					res.json({msg:"No result."});
 				}
@@ -192,7 +192,7 @@ router.post('/', function(req, res){
 			  }
 			  sql = sql + where + " GROUP BY raw_userinfo.pk";
 				result = {};
-				console.log("sql4:" + sql);
+				// console.log("sql4:" + sql);
 				var query = connection.query(sql, temp_userinfo3, function(err, rows){
 			    if(err) throw err;
 					if(rows.length==0){
@@ -206,23 +206,23 @@ router.post('/', function(req, res){
 							userinfo_pk[i] = rows[i].userinfo_pk;
 						}
 						saved_rows=rows;
-						console.log("4:"+userinfo_pk);
+						// console.log("4:"+userinfo_pk);
 						sql = "SELECT raw_basicinfo.question_fk, script_basicinfo.script AS question, script_basicinfo.category AS category_high, '' AS category_low, raw_basicinfo.answer AS answer_pk, choice_basic.choice AS answer	FROM script_basicinfo, choice_basic, raw_basicinfo WHERE raw_basicinfo.question_fk = script_basicinfo.pk AND raw_basicinfo.answer = choice_basic.pk AND raw_basicinfo.user_fk IN("+userinfo_pk+")	UNION ALL SELECT raw_aptitude.question_fk, script_aptitude.script AS question, script_aptitude.category_high AS category_high, script_aptitude.category_low AS category_low, raw_aptitude.answer AS answer_pk, choice_aptitude.choice AS answer FROM script_aptitude, choice_aptitude, raw_aptitude WHERE raw_aptitude.user_fk IN("+userinfo_pk+") AND raw_aptitude.question_fk = script_aptitude.pk AND ( (raw_aptitude.answer = choice_aptitude.pk AND raw_aptitude.answer>=1) OR (raw_aptitude.answer < 1 AND raw_aptitude.answer+2 = choice_aptitude.pk) ) UNION ALL SELECT raw_balance.question_fk, script_balance.script AS question, script_balance.category AS category_high, '' AS category_low, raw_balance.answer AS answer_pk, choice_balance.result AS answer FROM script_balance, choice_balance, raw_balance	WHERE raw_balance.user_fk IN("+userinfo_pk+") AND raw_balance.question_fk = script_balance.sequence AND raw_balance.answer = choice_balance.pk ORDER BY category_high ASC"
-						console.log(sql);
+						// console.log(sql);
 						var query = connection.query(sql, function(err, rows){
 							if(err) throw err;
 							result.interesting_plan = {learning_count:0, course_count:0, entrance_count:0};
 							var nv = {contents:'', count:0};
-							var connect_uns = {매우높음:5, 높음:4, 보통:3, 낮음:2, 매우낮음:1};
-							var connect_snd = {매우높음:'a', 높음:'b', 보통:'c', 낮음:'d', 매우낮음:'e'};
-							var connect_snd_object = {부모님:'a', 형제:'b', 학교선생님:'c', '학원,과외선생님':'d', 선배:'e', 후배:'f', 친구:'g', 나자신:'h'};
-							var connect_more_needs = {'응원(지지)':'support', 요구:'demand', '현재에 만족':'satisfied'};
-							var connect_activity_helpful = {'교내,외 동아리':'a', '교내,외 멘토링':'b', '독서,연구활동':'c', '강연,행사,박람회':'d', '학원 및 온라인강의':'e', '종합 컨설팅':'f', '공모전 참가':'g', '자격증 취득':'h'};
-							var connect_activity_wish = {'학습법,필기법':'a', '자기주도학습':'b', '독서활동':'c', '동아리활동':'d', '진로정보':'e', '진학정보':'f', '면접대비':'g', '돈,구술 대비':'h', '생기부,자소서':'i', '포트폴리오':'j', '전문가 멘토링':'k', '종합 컨설팅':'l'};
+							var connect_uns = {'매우 높아요':5, 높아요:4, 보통이에요:3, 낮아요:2, '매우 낮아요':1};
+							var connect_snd = {'매우 높아요':'a', 높아요:'b', 보통이에요:'c', 낮아요:'d', '매우 낮아요':'e'};
+							var connect_snd_object = {'나(자신 스스로)':'a', '부모님':'b', 선배:'c', 친구:'d', 학교선생님:'e', '학원,과외선생님':'f', 형제:'g', 후배:'h'};
+							var connect_more_needs = {'응원(지지)이 더 필요해요':'support', '요구가 더 필요해요':'demand', '현재 상황에 만족해요':'satisfied'};
+							var connect_activity_helpful = {'강연,행사,박람회':'a', '공모전 참가':'b', '교내,외 동아리':'c', '교내,외 멘토링':'d', '독서,연구활동':'e', '자격증 취득':'f', '종합 컨설팅':'g', '학원,온라인 강의 수강':'h'};
+							var connect_activity_wish = {'논,구술 대비':'a', '독서활동':'b', '동아리활동':'c', '면접 대비':'d', '생활기록부,자기소개서':'e', '자기주도학습':'f', '전문가 멘토링':'g', '종합 컨설팅':'h', '진로정보':'i', '진학정보':'j', '포트폴리오':'k', '학습법,필기법':'l'};
 							var connect_balance = [0, 0, 0, 1, 0, 2, 3, 4, 5, 0, 6, 0, 7, 8, 9, 10, 0, 0, 0, 0, 11, 12, 13, 14, 0, 15, 16, 17, 18, 19, 20, 0, 0, 21, 22, 23, 24, 0, 0, 25, 0, 26, 27, 28, 0, 29, 0, 30, 0];
 							result.field = {a:0, b:0, c:0, d:0, e:0, f:0, g:0, h:0, i:0, j:0};
 							result.occupation = {a:0, b:0, c:0, d:0, e:0, f:0, g:0, h:0, i:0, j:0, k:0, l:0, m:0, n:0, o:0};
-							result.goal_achieve_way = {a:0, b:0, c:0, d:0, e:0, f:0};
+							result.goal_achieve_way = {a:0, b:0, c:0, d:0, e:0, f:0, g:0};
 							result.goal_achieve_element = {a:0, b:0, c:0, d:0, e:0, f:0, g:0, h:0, i:0, j:0};
 							result.goal_completion_period = {short:0, middle:0, long:0};
 							result.goal_reason = {attention:0, practice:0, purpose:0, wish:0};
@@ -237,21 +237,21 @@ router.post('/', function(req, res){
 							result.score_questions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 							for(var i=0; i<rows.length; i++){
 								if(rows[i].category_high=='3_목표설정정보' && rows[i].question_fk==13){
-									if(rows[i].answer=='학습플래닝') result.interesting_plan.leaning_count++;
-									else if(rows[i].answer=='진로플래닝') result.interesting_plan.course_count++;
-									else if(rows[i].answer=='진학플래닝') result.interesting_plan.entrance_count++;
+									if(rows[i].answer=='학습플래닝(학습이력관리,교과별 학습법)') result.interesting_plan.leaning_count++;
+									else if(rows[i].answer=='진로플래닝(진로포트폴리오,연구 및 동아리 활동 기획)') result.interesting_plan.course_count++;
+									else if(rows[i].answer=='진학플래닝(생활기록부,자기소개서)') result.interesting_plan.entrance_count++;
 								}
 								if(rows[i].category_high=='1_기본정보' && rows[i].question_fk==4){
-									if(rows[i].answer=='인문') result.field.a++;
-									else if(rows[i].answer=='사회과학') result.field.b++;
-									else if(rows[i].answer=='자연과학') result.field.c++;
-									else if(rows[i].answer=='간호,의학') result.field.d++;
-									else if(rows[i].answer=='경영') result.field.e++;
-									else if(rows[i].answer=='예체능') result.field.f++;
-									else if(rows[i].answer=='법학') result.field.g++;
-									else if(rows[i].answer=='교육') result.field.h++;
-									else if(rows[i].answer=='공학') result.field.i++;
-									else if(rows[i].answer=='미정') result.field.j++;
+									if(rows[i].answer=='간호,의학') result.field.a++;
+									else if(rows[i].answer=='경영') result.field.b++;
+									else if(rows[i].answer=='공학') result.field.c++;
+									else if(rows[i].answer=='교육') result.field.d++;
+									else if(rows[i].answer=='법학') result.field.e++;
+									else if(rows[i].answer=='사회과학') result.field.f++;
+									else if(rows[i].answer=='예,체능') result.field.g++;
+									else if(rows[i].answer=='인문') result.field.h++;
+									else if(rows[i].answer=='자연과학') result.field.i++;
+									else if(rows[i].answer=='아직 결정하지 못했어요') result.field.j++;
 								}
 								if(rows[i].category_high=='1_기본정보' && rows[i].question_fk==5){
 									if(rows[i].answer=='경영,사무') result.occupation.a++;
@@ -268,33 +268,33 @@ router.post('/', function(req, res){
 									else if(rows[i].answer=='미디어') result.occupation.l++;
 									else if(rows[i].answer=='교수,교사') result.occupation.m++;
 									else if(rows[i].answer=='특수계층,공공') result.occupation.n++;
-									else if(rows[i].answer=='미정') result.occupation.o++;
+									else if(rows[i].answer=='아직 결정하지 못했어요') result.occupation.o++;
 								}
 								if(rows[i].category_high=='2_경험이력정보' && rows[i].question_fk==9){
-									if(rows[i].answer=='정보 및 개념습득') result.goal_achieve_way.a++;
-									else if(rows[i].answer=='암기') result.goal_achieve_way.b++;
-									else if(rows[i].answer=='문제풀이') result.goal_achieve_way.c++;
-									else if(rows[i].answer=='실험,발명') result.goal_achieve_way.d++;
-									else if(rows[i].answer=='토론,발표') result.goal_achieve_way.e++;
-									else if(rows[i].answer=='예술,체육') result.goal_achieve_way.f++;
-									else if(rows[i].answer=='생활관리') result.goal_achieve_way.g++;
+									if(rows[i].answer=='문제풀이') result.goal_achieve_way.a++;
+									else if(rows[i].answer=='발명,실험') result.goal_achieve_way.b++;
+									else if(rows[i].answer=='생활관리') result.goal_achieve_way.c++;
+									else if(rows[i].answer=='암기') result.goal_achieve_way.d++;
+									else if(rows[i].answer=='예술,체육') result.goal_achieve_way.e++;
+									else if(rows[i].answer=='정보,개념습득') result.goal_achieve_way.f++;
+									else if(rows[i].answer=='토론,발표') result.goal_achieve_way.g++;
 								}
 								if(rows[i].category_high=='2_경험이력정보' && rows[i].question_fk==10){
-									if(rows[i].answer=='성적향상') result.goal_achieve_element.a++;
-									else if (rows[i].answer == '리더십') result.goal_achieve_element.b++;
-									else if (rows[i].answer == '글로벌') result.goal_achieve_element.c++;
-									else if (rows[i].answer == '창의적사고') result.goal_achieve_element.d++;
-									else if (rows[i].answer == '의사소통') result.goal_achieve_element.e++;
-									else if (rows[i].answer == '자기관리') result.goal_achieve_element.f++;
-									else if (rows[i].answer == '지식정보처리') result.goal_achieve_element.g++;
-									else if (rows[i].answer == '심미적감성') result.goal_achieve_element.h++;
-									else if (rows[i].answer == '공동체') result.goal_achieve_element.i++;
-									else if (rows[i].answer == '문제해결') result.goal_achieve_element.j++;
+									if(rows[i].answer=='공동체') result.goal_achieve_element.a++;
+									else if (rows[i].answer == '글로벌') result.goal_achieve_element.b++;
+									else if (rows[i].answer == '리더십') result.goal_achieve_element.c++;
+									else if (rows[i].answer == '문제해결') result.goal_achieve_element.d++;
+									else if (rows[i].answer == '성적향상') result.goal_achieve_element.e++;
+									else if (rows[i].answer == '심미적감성') result.goal_achieve_element.f++;
+									else if (rows[i].answer == '의사소통') result.goal_achieve_element.g++;
+									else if (rows[i].answer == '자기관리') result.goal_achieve_element.h++;
+									else if (rows[i].answer == '지식정보처리') result.goal_achieve_element.i++;
+									else if (rows[i].answer == '창의적사고') result.goal_achieve_element.j++;
 								}
 								if(rows[i].category_high=='3_목표설정정보' && rows[i].question_fk==14){
-									if(rows[i].answer=='단기') result.goal_completion_period.short++;
-									else if(rows[i].answer=='중기') result.goal_completion_period.middle++;
-									else if(rows[i].answer=='장기') result.goal_completion_period.long++;
+									if(rows[i].answer=='3개월 이내') result.goal_completion_period.short++;
+									else if(rows[i].answer=='4개월~6개월') result.goal_completion_period.middle++;
+									else if(rows[i].answer=='7개월 이상') result.goal_completion_period.long++;
 								}
 								if(rows[i].category_high=='3_목표설정정보' && rows[i].question_fk==15){
 									if(rows[i].answer=='관심') result.goal_reason.attention++;
