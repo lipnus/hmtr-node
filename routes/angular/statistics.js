@@ -41,12 +41,9 @@ router.post('/', function(req, res){
   input.grade = req.body.grade; // 중1, 중2, 중3, 고1, 고2, 고3, N수생 복수입력
   input.field = req.body.field; // 인문, 사회과학, 자연과학, 간호/의학, 경영, 예/체능, 법학, 교육, 공학, 미정 복수선택
 	input.interesting_plan=req.body.interesting_plan;
-	console.log("ok1");
 	for(var i=0; i<input.interesting_plan.length; i++){
 		input.interesting_plan[i]=interesting_plan_connect[input.interesting_plan[i]];
-		console.log(input.interesting_plan[i]);
 	}
-	console.log(input.interesting_plan);
   input.attainment = req.body.attainment; // 목표달성경험 여부
   // // input.attainment2 = req.body.attainment2; // 2차 이상 설문에서 목표달성경험 여부
   input.goal_reason = req.body.goal_reason; // 관심, 연습, 목적, 희망
@@ -117,7 +114,7 @@ router.post('/', function(req, res){
 	    where = where + ") GROUP BY userinfo_pk)";
 	  }
 		sql = sql + where + " GROUP BY raw_userinfo.pk";
-		console.log("sql2:" + sql);
+		// console.log("sql2:" + sql);
 		query = connection.query(sql, temp_userinfo1, function(err, rows){
 			if(err) throw err;
 			for(var i=0; i<rows.length; i++){
