@@ -28,6 +28,7 @@ function score_to_grade(score){
 var min_score = [0, 97,  91, 82, 68, 52, 37, 29, 23, 20];
 var max_score = [0, 100, 97, 91, 82, 68, 52, 37, 29, 23];
 
+var interesting_plan_connect = {'학습플래닝' : '학습플래닝(학습이력관리,교과별 학습법)', '진로플래닝' : '진로플래닝(진로포트폴리오,연구 및 동아리 활동 기획)', '진학플래닝' : '진학플래닝(생활기록부,자기소개서)'};
 // function nnv(name, value){
 // 	this.name = name;
 // 	this.value = value;
@@ -39,7 +40,13 @@ router.post('/', function(req, res){
   input.gender = req.body.gender; // 남/녀/무관 중 택1
   input.grade = req.body.grade; // 중1, 중2, 중3, 고1, 고2, 고3, N수생 복수입력
   input.field = req.body.field; // 인문, 사회과학, 자연과학, 간호/의학, 경영, 예/체능, 법학, 교육, 공학, 미정 복수선택
-  input.interesting_plan = req.body.interesting_plan; // 학습/진로/진학 복수선택
+	input.interesting_plan=req.body.interesting_plan;
+	console.log("ok1");
+	for(var i=0; i<input.interesting_plan.length; i++){
+		input.interesting_plan[i]=interesting_plan_connect[input.interesting_plan[i]];
+		console.log(input.interesting_plan[i]);
+	}
+	console.log(input.interesting_plan);
   input.attainment = req.body.attainment; // 목표달성경험 여부
   // // input.attainment2 = req.body.attainment2; // 2차 이상 설문에서 목표달성경험 여부
   input.goal_reason = req.body.goal_reason; // 관심, 연습, 목적, 희망
@@ -110,7 +117,7 @@ router.post('/', function(req, res){
 	    where = where + ") GROUP BY userinfo_pk)";
 	  }
 		sql = sql + where + " GROUP BY raw_userinfo.pk";
-		// console.log("sql2:" + sql);
+		console.log("sql2:" + sql);
 		query = connection.query(sql, temp_userinfo1, function(err, rows){
 			if(err) throw err;
 			for(var i=0; i<rows.length; i++){
@@ -225,7 +232,7 @@ router.post('/', function(req, res){
 							result.goal_achieve_way = {a:0, b:0, c:0, d:0, e:0, f:0, g:0};
 							result.goal_achieve_element = {a:0, b:0, c:0, d:0, e:0, f:0, g:0, h:0, i:0, j:0};
 							result.goal_completion_period = {short:0, middle:0, long:0};
-							result.goal_reason = {attention:0, practice:0, purpose:0, wish:0};
+							result.goal_reason = {attention:0, practice:0, purpose:0, hope:0};
 							result.average_uns = {grade:0, course:0, self_care:0, relationship:0, balance:0};
 							result.count_support = {a:0, b:0, c:0, d:0, e:0};
 							result.count_support_object = {a:0, b:0, c:0, d:0, e:0, f:0, g:0, h:0};
@@ -237,7 +244,7 @@ router.post('/', function(req, res){
 							result.score_questions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 							for(var i=0; i<rows.length; i++){
 								if(rows[i].category_high=='3_목표설정정보' && rows[i].question_fk==13){
-									if(rows[i].answer=='학습플래닝(학습이력관리,교과별 학습법)') result.interesting_plan.leaning_count++;
+									if(rows[i].answer=='학습플래닝(학습이력관리,교과별 학습법)') result.interesting_plan.learning_count++;
 									else if(rows[i].answer=='진로플래닝(진로포트폴리오,연구 및 동아리 활동 기획)') result.interesting_plan.course_count++;
 									else if(rows[i].answer=='진학플래닝(생활기록부,자기소개서)') result.interesting_plan.entrance_count++;
 								}

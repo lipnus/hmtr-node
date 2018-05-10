@@ -74,7 +74,7 @@ router.post('/', function(req, res){
 		if(err) throw err;
 		result = {};
 		//cal_behavior
-		sql = 'SELECT script_behavior.category_high AS category_high, script_behavior.category_low AS category_low, choice_behavior.sequence AS score FROM choice_behavior, raw_behavior, script_behavior WHERE raw_behavior.user_fk = ? AND script_behavior.pk=raw_behavior.question_fk AND raw_behavior.answer=choice_behavior.pk GROUP BY raw_behavior.question_fk';
+		sql = 'SELECT script_behavior.category_high AS category_high, script_behavior.category_low AS category_low, choice_behavior.pk AS score FROM choice_behavior, raw_behavior, script_behavior WHERE raw_behavior.user_fk = ? AND script_behavior.pk=raw_behavior.question_fk AND raw_behavior.answer=choice_behavior.pk GROUP BY raw_behavior.question_fk';
 		query = connection.query(sql, userinfo_pk, function(err, rows){
 			if(err) throw err;
 
@@ -355,7 +355,7 @@ router.post('/', function(req, res){
 							result.course_worst_score = rows[i].score;
 						}
 						if(i-9 != balance_weight[1][quater][0] && i-9 != balance_weight[1][quater][1]) result.course_score += (rows[i].score*weight);
-						else result.course += (rows[i].score*2.5);
+						else result.course_score += (rows[i].score*2.5);
 					}
 					else if(i<30){
 						if(result.entrance_best_score < rows[i].score){
